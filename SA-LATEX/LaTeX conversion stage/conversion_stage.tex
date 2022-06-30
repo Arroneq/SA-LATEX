@@ -1,0 +1,61 @@
+\section*{Програмний етап}
+\addcontentsline{toc}{section}{Програмний етап}
+
+Для статистичного аналізу було обрано відкриті дані із загальнодоступного освітнього сайту 
+\url{https://osvita.ua/news/data/}. З-поміж інших даних, у переліку доступні <<Деперсоніфіковані дані 
+учасників ЗНО 2019 року з кожного навчального предмета>>. Надалі саме ця інформація буде розглянута. 
+
+\subsection*{Ініціалізація даних}
+\addcontentsline{toc}{subsection}{Ініціалізація даних}
+
+Зі сторінки сайту можна завантажити архів даних \texttt{opendatazno2019.zip}. У роз\-архівованій папці 
+наявні два файли з різними іменами: \texttt{opendatazno2019.xlsx} та \texttt{opendatazno2019\_info.xls}. У першому з них містяться 
+власне дані, а у другому -- опис і роз'яснення назв стовпців таблиці даних.  
+
+Файл \texttt{opendatazno2019.xlsx} має великий обсяг -- понад $230\ \text{MB}$, тому жоден онлайн редактор не 
+буде в змозі його відкрити. Рівно як і програмне забезпечення \texttt{Microsoft Excel}, \texttt{Google Sheets} 
+чи \texttt{LibreOffice Calc}. Тож для подальшого опрацювання вхідних даних буде використано засоби мови \texttt{Python}. 
+
+Для читання файлів розширення \texttt{.xlsx} можна використати бібліотеку \texttt{xlrd} версії \texttt{1.2.0} 
+й далі працювати безпосередно із рядками таблиці, пробігаючи кожну комірку так, як це показано у рядку $13$ 
+Лістингу  \ref{code: xlrd}: 
+
+\lstinputlisting[firstnumber=1, firstline=1, lastline=14, label = code: xlrd, caption = Використання бібліотеки xlrd]{conversion_stage.py}
+
+\vspace{0.4cm}
+Проте, у такому разі обробка файлу \texttt{opendatazno2019.xlsx} триватиме близько $5$ хвилин, тому такий 
+спосіб опрацювання великого обсягу даних є неефективним. Натомість, користуючись тією ж бібліотекою 
+\texttt{xlrd} у додачу до засобів бібліотек \texttt{pandas} та \texttt{csv}, можна зчитати й порядково 
+перевторити файл \texttt{.xlsx} у файл \texttt{.csv}, як це наведено на Лістингу \ref{code: .xlsl to .csv}. 
+Надалі це значно зменшить тривалість виконання обробки даних. Більше про різні способи зчитування й обробки 
+файлів розширення \texttt{.xlsx} можна довідатися за 
+\href{https://linuxhint.com/read-excel-file-python/}{цим посиланням}.
+
+\newpage
+\lstinputlisting[firstnumber=16, firstline=16, lastline=32, label = code: .xlsl to .csv, caption = Конвертація у \texttt{.csv} файл]{conversion_stage.py}
+
+\vspace{0.4cm}
+Як це зображено на Рис. \ref{fig:initial data}, початкові дані мають рядки невідповідного формату, 
+тобто ці дані є <<брудними>>. На Лістингу \ref{code: cleaning data} коротко вказані команди, за допомогою 
+яких можна прибрати нульові значення чи комірки з невідповідним форматом. Як результат -- матимемо готові 
+<<чисті>> дані для подальшої обробки. 
+
+\begin{figure}[H]
+    \center{\includegraphics[width=1\linewidth]{Initial data 14.png}}
+    \caption{Початкові дані}
+    \label{fig:initial data}
+\end{figure}
+
+\lstinputlisting[firstnumber=36, firstline=36, lastline=49, label = code: cleaning data, caption = Чистка даних]{conversion_stage.py}
+
+\subsection*{Реалізація рандомізованого формування елементів вибірок}
+\addcontentsline{toc}{subsection}{Реалізація рандомізованого формування елементів вибірок}
+
+Важливим етапом статистичного аналізу є реалізація випадкового, рандомізованого формування вибірок із усього 
+наявного масиву даних. Програмно таку реалізацію наведено на Лістингу нижче.
+
+\lstinputlisting[firstnumber=51, firstline=51, lastline=70, label = code: randomization, caption = Рандомізоване формування вибірок]{conversion_stage.py}
+
+\vspace{0.4cm}
+Із усім програмним кодом, який використано в роботі, можна ознайомитися у 
+\href{https://github.com/Arroneq/Statistical-analysis-of-ZNO-results-2019-PYTHON.git}{\texttt{github репозиторії}}.

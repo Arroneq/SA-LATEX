@@ -1,0 +1,3 @@
+[submodule "SA-PYTHON"]
+	path = SA-PYTHON
+	url = https://github.com/Arroneq/SA-PYTHON.git

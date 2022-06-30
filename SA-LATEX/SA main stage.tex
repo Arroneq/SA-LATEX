@@ -1,0 +1,108 @@
+\documentclass[a4paper,14pt]{extarticle} % the default << article >> class is limited to 12pt, but you can go up to 14, 17 or 20 points if you use the << extarticle >> class
+\usepackage{cmap} % make LaTeX PDF output copy-and-pasteable
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+
+\usepackage{amssymb, amsfonts, mathtools, amsmath, enumerate}
+\usepackage{indentfirst} % set an additional space before a paragraph at the begining of a new section
+\usepackage{setspace}
+\usepackage{textcomp}
+
+\usepackage{dsfont} % indicator symbol
+\usepackage{leftidx} % this package enables left subscripts and superscripts in math mode
+
+\usepackage{import} % for adding a file by path https://tex.stackexchange.com/questions/246/when-should-i-use-input-vs-include
+
+\usepackage{geometry} 
+\geometry{left=1.25cm}
+\geometry{right=1.25cm}
+\geometry{top=1cm}
+\geometry{bottom=2cm}
+
+\setlength{\arrayrulewidth}{0.3mm} % this sets the thickness of the borders of the table
+\setlength{\tabcolsep}{12pt} % the space between the text and the left/right border of its containing cell is set to 18pt with this command
+\renewcommand{\arraystretch}{1.5} % the height of each row is set to 1.5 relative to its default height
+
+\usepackage[table,xcdraw,dvipsnames]{xcolor}
+\usepackage{color}
+% 1) tutorial about xcolor:  https://www.overleaf.com/learn/latex/Using_colours_in_LaTeX
+% 2) huge tutorial about xcolor: https://latex-tutorial.com/color-latex/ 
+% 3) RGB calculator: https://www.w3schools.com/colors/colors_rgb.asp
+
+\usepackage{hyperref}
+\definecolor{linkcolor}{HTML}{0000FF}
+\definecolor{urlcolor}{HTML}{0000FF} 
+\hypersetup{pdfstartview=FitH, unicode=true, linkcolor=linkcolor, urlcolor=urlcolor, colorlinks=true}
+
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{float}
+
+\parskip=1mm % space between paragraphs
+
+\usepackage{listingsutf8} % origin: \usepackage{listings}
+
+\lstset{
+    frame=single,
+    language=Python,
+    aboveskip=3mm,
+    belowskip=3mm,
+    columns=flexible,
+    basicstyle={\small\ttfamily},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    commentstyle=\color{OliveGreen},
+    stringstyle=\color{Mahogany},
+    morestring=[b]''',
+    showstringspaces=false,
+    keywordstyle=\bfseries\color{blue},
+    emph={[1]import, as, for, while, return}, emphstyle={[1]\bfseries\color{magenta}},
+    emph={[2]range}, emphstyle={[2]\bfseries\color{brown}},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=4,
+    extendedchars=false, % to use ukrainian text in a code
+    inputencoding=utf8 % to use ukrainian text in a code
+}
+
+\begin{document}
+
+\import{Title/}{title}
+
+\tableofcontents
+
+\newpage
+\import{LaTeX conversion stage/}{conversion_stage}
+
+\newpage
+\import{LaTeX UKR/}{ZNO_ukr}
+
+\newpage
+\import{LaTeX MATH/}{ZNO_math}
+
+\import{LaTeX ENG/}{ZNO_eng}
+
+\section*{Загальний висновок}
+\addcontentsline{toc}{section}{Загальний висновок}
+
+Метою статистичного аналізу було з'ясувати, чи є значущою відмінність між балами ЗНО для чоловіків 
+та жінок. При цьому розглядалися результати трьох різних предметів: української мови, математики та 
+англійської мови.
+
+Перш за все вдалося встановити, що на рівні значущості $\alpha=0.01$ лише для української мови наявна 
+залежність між рівнем набраного балу та чинником статі. При спробі побудови інтервалу можливих значень різниці 
+середніх балів жінок та чоловіків, було отримано проміжок у $12.07\pm 0.2$ пункти, що свідчить про значне 
+перевищення оцінок жінок у порівнянні з оцінками чоловіків. Крім того, значення вказаного довірчого інтервалу 
+рівня довіри $\gamma=0.95$ додатково підтверджує хиб\-ність гіпотези однорідності статистичних даних результатів 
+з української мови для чоловіків та жінок. 
+
+У випадку аналізу балів з математики та англійської мови вже на першому кроці виявлено відсутність впливу статі 
+на рівень отриманого балу. До того ж довірчі інтервали різниці середніх оцінок різних статей мають невеликі 
+значення: $0.96\pm 0.3$ для математики та $1.89\pm 0.4$ для англійської мови. 
+
+Отже, як результат статистичного аналізу можна стверджувати, що лише з української мови наявна статистична 
+значущість відмінності результатів ЗНО в залежності від статі. Водночас на набрані бали з математики чинник 
+статі не має значного впливу.
+
+\end{document}
