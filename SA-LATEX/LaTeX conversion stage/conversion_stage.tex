@@ -18,9 +18,27 @@
 
 Для читання файлів розширення \texttt{.xlsx} можна використати бібліотеку \texttt{xlrd} версії \texttt{1.2.0} 
 й надалі працювати безпосередно із рядками таблиці, пробігаючи кожну комірку так, як це показано у рядку $13$ 
-Лістингу  \ref{code: xlrd}: 
+Лістингу  \ref{code: xlrd}:
 
-\lstinputlisting[firstnumber=1, firstline=1, lastline=14, label = code: xlrd, caption = Використання бібліотеки xlrd]{conversion_stage.py}
+% in case you want to paste code from a file:
+% \lstinputlisting[firstnumber=1, firstline=1, lastline=14, label = code: xlrd, caption = Використання бібліотеки xlrd]{conversion_stage.py}
+
+\begin{lstlisting}[firstnumber=1, label = code: xlrd, caption = Використання бібліотеки xlrd]
+import xlrd
+
+# open the workbook
+workbook = xlrd.open_workbook("opendatazno2019.xlsx")
+    
+# open the worksheet
+worksheet = workbook.sheet_by_index(0)
+    
+# iterate the rows and columns
+for i in range(0, 5):
+    for j in range(0, 3):
+        # print the cell values with a tab space
+        print(worksheet.cell_value(i, j), end="\t")
+    print("")
+\end{lstlisting}
 
 \vspace{0.4cm}
 Проте у такому разі обробка файлу триватиме близько $5$-ти хвилин, тож такий спосіб опрацювання великого 
@@ -31,7 +49,25 @@
 довідатися за \href{https://linuxhint.com/read-excel-file-python/}{цим посиланням}.
 
 \newpage
-\lstinputlisting[firstnumber=16, firstline=16, lastline=32, label = code: .xlsl to .csv, caption = Конвертація у \texttt{.csv} файл]{conversion_stage.py}
+\begin{lstlisting}[firstnumber=16, label = code: .xlsl to .csv, caption = Конвертація у \texttt{.csv} файл]
+import pandas as pd
+import xlrd 
+import csv
+    
+# open workbook by sheet index, optional - sheet_by_index()
+sheet = xlrd.open_workbook("opendatazno2019.xlsx").sheet_by_index(0)
+    
+# writer object is created
+column = csv.writer(open("opendatazno2019.csv", "w", newline=""))
+    
+# write the data into csv file
+for row in range(sheet.nrows):
+    # row by row write operation
+    column.writerow(sheet.row_values(row))
+    
+# read csv file and convert into a dataframe object
+df = pd.DataFrame(pd.read_csv("opendatazno2019.csv", dtype="unicode"))
+\end{lstlisting}
 
 \vspace{0.4cm}
 Як це зображено на Рис. \ref{figure: initial data}, початкові дані мають рядки невідповідного формату, 
@@ -45,7 +81,22 @@
     \label{figure: initial data}
 \end{figure}
 
-\lstinputlisting[firstnumber=36, firstline=36, lastline=49, label = code: cleaning data, caption = Чистка даних]{conversion_stage.py}
+\begin{lstlisting}[firstnumber=36, label = code: cleaning data, caption = Чистка даних]
+df = pd.DataFrame(pd.read_csv("opendatazno2019.csv", dtype="unicode"))
+
+# remove all rows with NULL values:
+cleaned_df = df.dropna(subset=["UkrBall100"])
+
+# resetting indexes after removing rows from the dataframe
+cleaned_df = cleaned_df.reset_index(drop=True)
+
+# convert strings to floats in order to use .mean() later
+cleaned_df["UkrBall100"] = cleaned_df["UkrBall100"].astype("float") 
+
+# remove all rows with "0.0" values:
+cleaned_df = cleaned_df.loc[cleaned_df["UkrBall100"] != 0.0]
+cleaned_df.reset_index(drop=True, inplace=True)
+\end{lstlisting}
 
 \subsection*{Реалізація рандомізованого формування елементів вибірок}
 \addcontentsline{toc}{subsection}{Реалізація рандомізованого формування елементів вибірок}
@@ -53,7 +104,29 @@
 Важливим етапом статистичного аналізу є реалізація випадкового, рандомізованого формування вибірок із усього 
 наявного масиву даних. Програмно таку реалізацію наведено на Лістингу нижче.
 
-\lstinputlisting[firstnumber=51, firstline=51, lastline=70, label = code: randomization, caption = Рандомізоване формування вибірок]{conversion_stage.py}
+\begin{lstlisting}[firstnumber=51, label = code: randomization, caption = Рандомізоване формування вибірок]
+import random
+
+sample_size = 500
+
+# create a list of all possible indexes
+index = [i for i in range(0,cleaned_df.last_valid_index()+1)]
+
+# create an empty dictionary
+random_elements = {}
+
+# add one empty column to a dictionary
+elements = []
+random_elements.update({"UkrBall100": elements})
+
+for i in range(sample_size):
+    random_index = random.choice(index)
+    elements.append(cleaned_df.loc[random_index, "UkrBall100"])
+    index.remove(random_index)
+
+# convert dictionary to a dataframe
+random_selected_df = pd.DataFrame(random_elements)
+\end{lstlisting}
 
 \vspace{0.4cm}
 Із усім використаним в ході роботи програмним кодом \texttt{Python} можна ознайомитися на  
