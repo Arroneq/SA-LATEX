@@ -57,15 +57,13 @@ import csv
 # open workbook by sheet index, optional - sheet_by_index()
 sheet = xlrd.open_workbook("opendatazno2019.xlsx").sheet_by_index(0)
     
-# writer object is created
 column = csv.writer(open("opendatazno2019.csv", "w", newline=""))
     
-# write the data into csv file
+# row by row rewrite the data into csv file
 for row in range(sheet.nrows):
-    # row by row write operation
     column.writerow(sheet.row_values(row))
     
-# read csv file and convert into a dataframe object
+# convert file into a dataframe object
 df = pd.DataFrame(pd.read_csv("opendatazno2019.csv", dtype="unicode"))
 \end{lstlisting}
 
@@ -87,13 +85,13 @@ df = pd.DataFrame(pd.read_csv("opendatazno2019.csv", dtype="unicode"))
 # remove all rows with NULL values:
 cleaned_df = df.dropna(subset=["UkrBall100"])
 
-# resetting indexes after removing rows from the dataframe
+# reset indexes after removing rows from the dataframe
 cleaned_df = cleaned_df.reset_index(drop=True)
 
 # convert strings to floats in order to use .mean() later
 cleaned_df["UkrBall100"] = cleaned_df["UkrBall100"].astype("float") 
 
-# remove all rows with "0.0" values:
+# select rows without "0.0" values:
 cleaned_df = cleaned_df.loc[cleaned_df["UkrBall100"] != 0.0]
 cleaned_df.reset_index(drop=True, inplace=True)
 \end{lstlisting}
@@ -109,13 +107,13 @@ import random
 
 sample_size = 500
 
-# create a list of all possible indexes
+# create a list of all the possible indexes
 index = [i for i in range(0,cleaned_df.last_valid_index()+1)]
 
 # create an empty dictionary
 random_elements = {}
 
-# add one empty column to a dictionary
+# add one empty column to the dictionary
 elements = []
 random_elements.update({"UkrBall100": elements})
 
